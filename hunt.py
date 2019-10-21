@@ -52,9 +52,10 @@ print("Let the hunt begin!")
 
 while True:
     try:
-        # Make sure w don't get negative values.
+        # Make sure we don't get negative values.
         val = max(0, int(hx.get_weight(5)))
 
+        
         # Do the logic here!
         fullpath = sounddir + "/" + str(val) + ".wav"
         # print(fullpath)
