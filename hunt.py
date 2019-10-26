@@ -6,6 +6,7 @@ import sys
 import os
 import os.path
 from os import path
+import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 
 # The directory where the sounds are located.
 sounddir = "Sounds"
@@ -13,6 +14,9 @@ sounddir = "Sounds"
 # HX711 Pinns used (GPIO number).
 gpiopin1 = 5
 gpiopin2 = 6
+
+# Lid-button.
+gpiopin3 = 3
 
 # To emulate the HX711 set to True
 EMULATE_HX711=False
@@ -55,7 +59,6 @@ while True:
         # Make sure we don't get negative values.
         val = max(0, int(hx.get_weight(5)))
 
-        
         # Do the logic here!
         fullpath = sounddir + "/" + str(val) + ".wav"
         # print(fullpath)
