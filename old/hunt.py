@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 #coding=utf-8
 
 import time
@@ -12,8 +12,8 @@ import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 sounddir = "Sounds"
 
 # HX711 Pinns used (GPIO number).
-gpiopin1 = 5
-gpiopin2 = 6
+gpiopin1 = 20
+gpiopin2 = 21
 
 # Lid-button.
 gpiopin3 = 3
