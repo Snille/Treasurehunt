@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 #coding=utf-8
 
-import RPi.GPIO as GPIO  # import GPIO
-from hx711 import HX711  # import the class HX711
-#import time
-#from time import sleep
+import RPi.GPIO as GPIO
+from hx711 import HX711
 import sys
 import os
 import os.path
@@ -25,7 +23,10 @@ unlockangle = 130
 info = 0
 
 # Coins to collect for the chest to open.
-goal = 10
+goal = 100
+
+# Set to 1 if ot is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
+overgoalok = 1
 
 # Pin used for the lidswitch. Low when the lid is closed.
 lidpin = 5
@@ -45,9 +46,8 @@ read = 1
 sounddir = "Sounds"
 
 # Loking the chest
-print("Locking the chest")
+print("The hunt is on! Locking the chest!")
 kit.servo[0].angle = lockangle
-
 
 try:
     GPIO.setmode(GPIO.BCM)  # set GPIO pin mode to BCM numbering
@@ -60,13 +60,6 @@ try:
     # check if successful
     if err:
         raise ValueError('Tare is unsuccessful.')
-
-    reading = hx.get_raw_data_mean()
-#    if reading:  # always check if you get correct value or only False
-        # now the value is close to 0
-#        print('Data subtracted by offset but still not converted to units:', reading)
-#    else:
-#        print('invalid data', reading)
 
     # Setting up the input buttons.
     GPIO.setup(lidpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -94,20 +87,31 @@ try:
                      # Plays message 1 -> Next 2
                     elif info == 1:
                         os.system("aplay -q " + sounddir + "/Explain-01.wav")
+                        os.system("aplay -q " + sounddir + "/Haha-01.wav")
                         info = 2
                     # Plays message 2 -> Next 3
                     elif info == 2:
                         os.system("aplay -q " + sounddir + "/Explain-02.wav")
+                        os.system("aplay -q " + sounddir + "/Haha-02.wav")
                         info = 3
                     # Plays message 3 -> Next 1
                     elif info == 3:
                         os.system("aplay -q " + sounddir + "/Explain-03.wav")
+                        os.system("aplay -q " + sounddir + "/Haha-03.wav")
                         info = 1
 
-                # Set the path and filename to the number sound.
-                fullpath = sounddir + "/" + str(val) + ".wav"
+                if overgoalok == 1:
+                    # If over goal is allowed. This is the last message.
+                    if val >= goal:
+                        fullpath = sounddir + "/HittatAlla-01.wav"
+                    else:
+                        # Set the path and filename to the number sound.
+                        fullpath = sounddir + "/" + str(val) + ".wav"
+                else:
+                    # Set the path and filename to the number sound.
+                    fullpath = sounddir + "/" + str(val) + ".wav"
 
-                # If the sound exists, play it.
+                # If the nuber sound exists, play it.
                 if path.exists(fullpath):
                     os.system("aplay -q " + sounddir + "/Count-01.wav")
                     os.system("aplay -q " + fullpath)
@@ -117,8 +121,12 @@ try:
                 read = 0
 
                 # If the goal amount of coins are reached. Open the chest.
-                if val == goal:
-                    raise SystemExit
+                if overgoalok == 1:
+                    if val >= goal:
+                        raise SystemExit
+                else:
+                    if val == goal:
+                        raise SystemExit
 
         # If secret button is pressed unlock the chest as long as the button is pressed.
         if GPIO.input(secretpin) == GPIO.LOW:
@@ -133,6 +141,7 @@ try:
 # At the end of everything, exit cleanly.
 except (KeyboardInterrupt, SystemExit):
     kit.servo[0].angle = unlockangle
+    os.system("aplay -q " + sounddir + "/Done-01.wav")
     print("Chest is now unlocked, bye...")
 
 # Clean up the inputs.
