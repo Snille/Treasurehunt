@@ -2,8 +2,9 @@
 I made this for my daughters 8:th birthday.
 
 
-![Treasure Chest](/Pictures/Kista-01.jpg)
-![Pireate Coins](/Pictures/potcc.jpg)
+![Treasure Chest](/Pictures/Kista-01-small.jpg)
+![Treasure Chest](/Pictures/Kista-02-small.jpg)
+![Pireate Coins](/Pictures/potcc-small.jpg)
 
 
 
