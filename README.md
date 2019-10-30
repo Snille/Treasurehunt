@@ -14,17 +14,16 @@ It's built around a 5kg "[Load Cell](https://www.ebay.co.uk/itm/Electronic-Balan
 When the members of the birthday party finds the Treasure Chest, they can not open the lid fully. It's locked from the inside and can only be opened about 15mm.
 
 
-When they lift and close the lid the first time the "Explain-01.wav" and then "Haha-01.wav" files are played. It continues to play even if the lid is closed again. If they lift and close again the "Explain-02.wav" and "Haha-02.wav" are played and if they lift and close a third time the "Explain-03.wav" and "Haha-03.wav" are played. Then it loops back to the first after every lift and close until some one starts to add in coins.
+When they lift and close the lid the first time the "Explain-01.wav" and then "Haha-01.wav" files are played. It continues to play even if the lid is opened and closed over and over until it's played in full. Then if they lift and close again the "Explain-02.wav" and "Haha-02.wav" are played the same way and if they lift and close a third time the "Explain-03.wav" and "Haha-03.wav" are played. Then it loops back to the first and so on, after every lift and close until some one starts to add in coins.
 
 
-The participants has to find all the 100 (definable) pirate coins and push them in to the chest (lifting the lid to get them in). Every time the lid closes the "Count-01.wav", "XX.wav" (depending of the number of coins added) and "Count-02.wav" will be played.
+The participants has to find all the 100 (definable) pirate coins and push them in to the chest (lifting the lid the 15mm to get them in). Every time the lid closes the "Count-01.wav", "XX.wav" (depending of the number of coins added) and "Count-02.wav" will be played.
 
 
-This will continue to happen until all coins are collected and inserted. 
+This will continue to happen until all coins inserted.
 
 
-When the correct amount of coins are inserted, the chest will unlock (the servo moves so the latch gets unhooked) and the last "Done-01.wav" will be played and tce chest can now be opened.
-
+When the correct amount of coins are inserted, the chest will unlock (the servo moves so the latch gets unhooked) and the last "Done-01.wav" will be played and the chest can now be opened.
 
 
 PS: There is also a "secret" unlock button that can be hold to open the chest if needed. But it's of course only for testing and emergency's. :)
