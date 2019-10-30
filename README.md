@@ -2,8 +2,8 @@
 I made this for my daughters 8:th birthday.
 
 
-![Treasure Chest](https://github.com/Snille/Treasurehunt/blob/master/Pictures/Kista-01.jpg)
-![Pireate Coins](https://github.com/Snille/Treasurehunt/blob/master/Pictures/potcc.jpg)
+![Treasure Chest](/Pictures/Kista-01.jpg)
+![Pireate Coins](/Pictures/potcc.jpg)
 
 
 
