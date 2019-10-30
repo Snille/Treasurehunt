@@ -103,7 +103,7 @@ try:
                 if overgoalok == 1:
                     # If over goal is allowed. This is the last message.
                     if val >= goal:
-                        fullpath = sounddir + "/HittatAlla-01.wav"
+                        fullpath = sounddir + "/FoundAll-01.wav"
                     else:
                         # Set the path and filename to the number sound.
                         fullpath = sounddir + "/" + str(val) + ".wav"
