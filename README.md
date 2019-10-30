@@ -17,5 +17,5 @@ The participants has to find all the 100 (definable) pirate coins and push them 
 This will continue to happen until all coins are collected and inserted. 
 
 
-When the correct amount of coins are inserted, the chest will unlock (the servo moves so the latch get's unhooked) and the last "HittatAlla-01.wav" will be played and tce chest can now be opened.
+When the correct amount of coins are inserted, the chest will unlock (the servo moves so the latch get's unhooked) and the last "Done-01.wav" will be played and tce chest can now be opened.
 
