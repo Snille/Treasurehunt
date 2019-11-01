@@ -8,6 +8,7 @@ import os
 import os.path
 from os import path
 from adafruit_servokit import ServoKit
+import random
 
 # Set channels to the number of servo channels on your kit.
 # 8 for FeatherWing, 16 for Shield/HAT/Bonnet.
@@ -100,22 +101,24 @@ try:
                         os.system("aplay -q " + sounddir + "/Haha-03.wav")
                         info = 1
 
-                if overgoalok == 1:
-                    # If over goal is allowed. This is the last message.
-                    if val >= goal:
-                        fullpath = sounddir + "/FoundAll-01.wav"
-                    else:
-                        # Set the path and filename to the number sound.
-                        fullpath = sounddir + "/" + str(val) + ".wav"
-                else:
-                    # Set the path and filename to the number sound.
-                    fullpath = sounddir + "/" + str(val) + ".wav"
+                # Setting up the count sound sample.
+                fullpath = sounddir + "/" + str(val) + ".wav"
 
                 # If the nuber sound exists, play it.
                 if path.exists(fullpath):
                     os.system("aplay -q " + sounddir + "/Count-01.wav")
                     os.system("aplay -q " + fullpath)
                     os.system("aplay -q " + sounddir + "/Count-02.wav")
+
+                    # Generates a random number between 0-8
+                    rand = random.randint(1, 6)
+                    # Plays a laugh if the randum namber matches.
+                    if rand == 2:
+                        os.system("aplay -q " + sounddir + "/Haha-01.wav")
+                    elif rand == 4:
+                        os.system("aplay -q " + sounddir + "/Haha-02.wav")
+                    elif rand == 6:
+                        os.system("aplay -q " + sounddir + "/Haha-03.wav")
 
                 # Only play once. The lid has to be closed and opend again to play again.
                 read = 0
