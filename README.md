@@ -8,10 +8,12 @@ I made this for my daughters 8:th birthday.
 
 
 The electronics.
+
 ![Electronics](/Pictures/Electronics.png)
 
 
 This is the inside. The "outer" shelf is attached to the load cell and weigh the coins when they are pushed in from the front and the sides.
+
 ![Inside Back](/Pictures/Backside-Inside.png)
 ![Inside Frpnt](/Pictures/Frontside-Inside.png)
 
