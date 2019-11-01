@@ -5,7 +5,7 @@ I made this for my daughters 8:th birthday.
 ![Treasure Chest](/Pictures/Kista-01-small.jpg)
 ![Treasure Chest](/Pictures/Kista-02-small.jpg)
 ![Pireate Coins](/Pictures/potcc-small.jpg)
-
+![Electronics](/Pictures/Electronics.png)
 
 
 It's built around a 5kg "[Load Cell](https://www.ebay.co.uk/itm/Electronic-Balance-Weighing-Load-Cell-Sensor-5Kg-with-HX711-Module/162241279056?hash=item25c6557450:g:l7gAAOSwh2xYAwSK)" with a HX711 module a "[Treasure Chest](https://fyndgiganten.se/produkt/vidaxl-forvaringslada-i-atervunnet-tra/)" and the Pirates of the Caribbean treasure [Coin](https://www.thingiverse.com/thing:2936980).
