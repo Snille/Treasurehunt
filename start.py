@@ -29,10 +29,10 @@ goal = 100
 overgoalok = 1
 
 # Pin used for the lidswitch. Low when the lid is closed.
-lidpin = 5
+lidpin = 23
 
 # Secret open switch Pin
-secretpin = 27
+secretpin = 24
 
 # Coin weight number ratio in House: 855
 ratio = 855
