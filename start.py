@@ -9,6 +9,10 @@ import os.path
 from os import path
 from adafruit_servokit import ServoKit
 import random
+import json
+import urllib.request
+import requests
+
 
 # Set channels to the number of servo channels on your kit.
 # 8 for FeatherWing, 16 for Shield/HAT/Bonnet.
@@ -24,9 +28,9 @@ unlockangle = 130
 info = 0
 
 # Coins to collect for the chest to open.
-goal = 100
+goal = 5
 
-# Set to 1 if ot is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
+# Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
 overgoalok = 1
 
 # Pin used for the lidswitch. Low when the lid is closed.
@@ -43,11 +47,39 @@ ratio = 855
 # Play the sound
 read = 1
 
+# Post to the MagicMirror (1 = on or 0 = off)
+mmpost = 1
+
+# Seconds to show the message on the MagicMirror (shows until time is up or a new message is sent).
+mmtime = 3600 # For each message.
+mmendtime = 60 # For the last message.
+
+# Size of the MagicMirror message (small, medium, large)
+mmsize = "large"
+
+# MagicMirror Party Profile (set to the MMM-Remote-Control module that changes profile via MMM-ProfileSwitcher)
+#startprofile = "http://10.0.0.112:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Treasure"
+startprofile = "http://10.0.0.20:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Treasure"
+#endprofile = "http://10.0.0.20:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Vader"
+endprofile = "http://10.0.0.20:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Erik"
+
+# MagicMirror modules MMM-IFTTTs URL to use.
+#url="http://10.0.0.112:8080/IFTTT"
+url="http://10.0.0.20:8080/IFTTT"
+
+# MagicMirror modules to show / hide
+# Show Module: http://10.0.0.20:8080/remote?action=SHOW&module=module_2_clock
+# Hide Module: http://10.0.0.20:8080/remote?action=HIDE&module=module_2_clock
+
 # The directory where the sounds are located.
 sounddir = "Sounds"
 
 # Loking the chest
 print("The hunt is on! Locking the chest!")
+if mmpost == 1:
+    profileresponse = urllib.request.urlopen(startprofile)
+    iftttresponse = requests.post(url, json={'message': 'Leta piratmynt!', 'displaySeconds': mmtime, 'size': mmsize})
+
 kit.servo[0].angle = lockangle
 
 try:
@@ -68,19 +100,22 @@ try:
 
     print("I will now start to keep track of collected coins in an infinite loop. To exit press 'CTRL + C' or collect", goal, "coins to unlock the chest")
 
-    # Calculating the scale of one sigle coin.
+    # Calculating the scale of one single coin.
     hx.set_scale_ratio(ratio)
 
     # Staring the loop.
     while True:
 
-        # Chacks what's on the scale (returns only intigers and no negative numbers).
+        # Chacks what's on the scale (returns only integers and no negative numbers).
         val = max(0, int(hx.get_weight_mean(5)))
 
         # When lid opens, this happens...
         if GPIO.input(lidpin) == GPIO.LOW:
             if read == 1:
                 print("Collected coins so far: " + str(val))
+                if mmpost == 1:
+                    iftttresponse = requests.post(url, json={'message': str(val) + ' av 100 mynt hittade...', 'displaySeconds': mmtime, 'size': mmsize})
+                
                 if val == 0:
                     # Avoids the first message to be plyed when the program starts with the lid closed.
                     if info == 0:
@@ -120,7 +155,7 @@ try:
                     elif rand == 6:
                         os.system("aplay -q " + sounddir + "/Haha-03.wav")
 
-                # Only play once. The lid has to be closed and opend again to play again.
+                # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
 
                 # If the goal amount of coins are reached. Open the chest.
@@ -144,8 +179,13 @@ try:
 # At the end of everything, exit cleanly.
 except (KeyboardInterrupt, SystemExit):
     kit.servo[0].angle = unlockangle
-    os.system("aplay -q " + sounddir + "/Done-01.wav")
+    if read == 1:
+        os.system("aplay -q " + sounddir + "/Done-01.wav")
+
     print("Chest is now unlocked, bye...")
+    if mmpost == 1:
+        profileresponse = urllib.request.urlopen(endprofile)
+        iftttresponse = requests.post(url, json={'message': 'Alla mynt funna! Kistan är upplåst!', 'displaySeconds': mmendtime, 'size': mmsize})
 
 # Clean up the inputs.
 finally:
