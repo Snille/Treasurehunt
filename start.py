@@ -12,7 +12,12 @@ import random
 import json
 import urllib.request
 import requests
+import alsaaudio
 
+# Set Alsa "headphone jack" volume to "volume".
+volume = 100
+m = alsaaudio.Mixer('Headphone')
+m.setvolume(volume)
 
 # Set channels to the number of servo channels on your kit.
 # 8 for FeatherWing, 16 for Shield/HAT/Bonnet.
@@ -25,7 +30,7 @@ lockangle = 15
 unlockangle = 130
 
 # Start number for information sample (1, 2, 3).
-info = 0
+info = 1
 
 # Coins to collect for the chest to open.
 goal = 5
@@ -33,7 +38,7 @@ goal = 5
 # Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
 overgoalok = 1
 
-# Pin used for the lidswitch. Low when the lid is closed.
+# Pin used for the lid switch. Low when the lid is closed.
 lidpin = 23
 
 # Secret open switch Pin
@@ -44,8 +49,12 @@ ratio = 855
 # Coin weight number ratio in Workshop: 827
 #ratio = 827
 
-# Play the sound
-read = 1
+# Play the sound (0 for no 1 for yes)
+playsound = 1
+
+# MagicMirror IP and port.
+mmip = "10.0.0.20"
+mmport = "8080" 
 
 # Post to the MagicMirror (1 = on or 0 = off)
 mmpost = 1
@@ -58,27 +67,32 @@ mmendtime = 60 # For the last message.
 mmsize = "large"
 
 # MagicMirror Party Profile (set to the MMM-Remote-Control module that changes profile via MMM-ProfileSwitcher)
-#startprofile = "http://10.0.0.112:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Treasure"
-startprofile = "http://10.0.0.20:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Treasure"
-#endprofile = "http://10.0.0.20:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Vader"
-endprofile = "http://10.0.0.20:8080/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Erik"
+startprofile = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Treasure"
+endprofile = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Erik"
 
 # MagicMirror modules MMM-IFTTTs URL to use.
-#url="http://10.0.0.112:8080/IFTTT"
-url="http://10.0.0.20:8080/IFTTT"
+url="http://" + mmip + ":" + mmport + "/IFTTT"
 
 # MagicMirror modules to show / hide
-# Show Module: http://10.0.0.20:8080/remote?action=SHOW&module=module_2_clock
-# Hide Module: http://10.0.0.20:8080/remote?action=HIDE&module=module_2_clock
+# Module to show 
+showprestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_7_MMM-ImageFit"
+hideprestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_7_MMM-ImageFit"
+
+showstartmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_8_MMM-ImageFit"
+hidestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_8_MMM-ImageFit"
+
+showcoinmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_9_MMM-ImageFit"
+hidecoinmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_9_MMM-ImageFit"
 
 # The directory where the sounds are located.
 sounddir = "Sounds"
 
+# Reserved.
+started = 0
+read = 0
+
 # Loking the chest
 print("The hunt is on! Locking the chest!")
-if mmpost == 1:
-    profileresponse = urllib.request.urlopen(startprofile)
-    iftttresponse = requests.post(url, json={'message': 'Leta piratmynt!', 'displaySeconds': mmtime, 'size': mmsize})
 
 kit.servo[0].angle = lockangle
 
@@ -106,48 +120,62 @@ try:
     # Staring the loop.
     while True:
 
-        # Chacks what's on the scale (returns only integers and no negative numbers).
+        # Checks what's on the scale (returns only integers and no negative numbers).
         val = max(0, int(hx.get_weight_mean(5)))
+        # Make sure that the "value" (show and spoken) of the collected coins don't overshoot the goal (if that's allowed).
+        if overgoalok == 1:
+            if val >= goal:
+                val = goal
 
         # When lid opens, this happens...
         if GPIO.input(lidpin) == GPIO.LOW:
             if read == 1:
                 print("Collected coins so far: " + str(val))
                 if mmpost == 1:
-                    iftttresponse = requests.post(url, json={'message': str(val) + ' av 100 mynt hittade...', 'displaySeconds': mmtime, 'size': mmsize})
+                    # Show the coin module and the message on the MagicMirror
+                    moduleresponse = urllib.request.urlopen(showcoinmodule)
+                    iftttresponse = requests.post(url, json={'message': 'Ni har hittat ' + str(val) + ' av 100 piratmynt. Fortsätt leta...', 'displaySeconds': mmtime, 'size': mmsize})
                 
                 if val == 0:
-                    # Avoids the first message to be plyed when the program starts with the lid closed.
-                    if info == 0:
-                        info = 1
-                     # Plays message 1 -> Next 2
-                    elif info == 1:
-                        os.system("aplay -q " + sounddir + "/Explain-01.wav")
-                        os.system("aplay -q " + sounddir + "/Haha-01.wav")
-                        info = 2
-                    # Plays message 2 -> Next 3
-                    elif info == 2:
-                        os.system("aplay -q " + sounddir + "/Explain-02.wav")
-                        os.system("aplay -q " + sounddir + "/Haha-02.wav")
-                        info = 3
-                    # Plays message 3 -> Next 1
-                    elif info == 3:
-                        os.system("aplay -q " + sounddir + "/Explain-03.wav")
-                        os.system("aplay -q " + sounddir + "/Haha-03.wav")
-                        info = 1
+                    # Display start message on MagicMirror
+                    if mmpost == 1:
+                        moduleresponse = urllib.request.urlopen(hideprestartmodule)
+                        moduleresponse = urllib.request.urlopen(showstartmodule)
+                        iftttresponse = requests.post(url, json={'message': 'Ni måste samla in 100 piratmynt och peta in dem genom glipan som blir när man försöker öppna kistlocket!', 'displaySeconds': mmtime, 'size': mmsize})
+                    # Only play sounds when playsound is 1
+                    if playsound == 1:
+                        # Avoids the first message to be played when the program starts with the lid closed.
+                        if info == 0:
+                            info = 1
+                        # Plays message 1 -> Next 2
+                        elif info == 1:
+                            os.system("aplay -q " + sounddir + "/Explain-01.wav")
+                            os.system("aplay -q " + sounddir + "/Haha-01.wav")
+                            info = 2
+                        # Plays message 2 -> Next 3
+                        elif info == 2:
+                            os.system("aplay -q " + sounddir + "/Explain-02.wav")
+                            os.system("aplay -q " + sounddir + "/Haha-02.wav")
+                            info = 3
+                        # Plays message 3 -> Next 1
+                        elif info == 3:
+                            os.system("aplay -q " + sounddir + "/Explain-03.wav")
+                            os.system("aplay -q " + sounddir + "/Haha-03.wav")
+                            info = 1
 
-                # Setting up the count sound sample.
-                fullpath = sounddir + "/" + str(val) + ".wav"
+                if playsound == 1:
+                    # Setting up the count sound sample.
+                    fullpath = sounddir + "/" + str(val) + ".wav"
 
-                # If the nuber sound exists, play it.
-                if path.exists(fullpath):
-                    os.system("aplay -q " + sounddir + "/Count-01.wav")
-                    os.system("aplay -q " + fullpath)
-                    os.system("aplay -q " + sounddir + "/Count-02.wav")
+                    # If the number sound exists, play it.
+                    if path.exists(fullpath):
+                        os.system("aplay -q " + sounddir + "/Count-01.wav")
+                        os.system("aplay -q " + fullpath)
+                        os.system("aplay -q " + sounddir + "/Count-02.wav")
 
                     # Generates a random number between 0-8
                     rand = random.randint(1, 6)
-                    # Plays a laugh if the randum namber matches.
+                    # Plays a laugh if the random number matches.
                     if rand == 2:
                         os.system("aplay -q " + sounddir + "/Haha-01.wav")
                     elif rand == 4:
@@ -158,6 +186,10 @@ try:
                 # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
 
+                # Hide the coin module on the MagicMirror
+                if mmpost == 1:
+                    moduleresponse = urllib.request.urlopen(hidecoinmodule)
+                        
                 # If the goal amount of coins are reached. Open the chest.
                 if overgoalok == 1:
                     if val >= goal:
@@ -171,7 +203,14 @@ try:
             kit.servo[0].angle = unlockangle
         else:
             kit.servo[0].angle = lockangle
-
+            if started == 0:
+                # Display Pre start message on the MagicMirror
+                if mmpost == 1:
+                    profileresponse = urllib.request.urlopen(startprofile)
+                    moduleresponse = urllib.request.urlopen(showprestartmodule)
+                    iftttresponse = requests.post(url, json={'message': 'Jakten på piratmynten har börjat!!', 'displaySeconds': mmtime, 'size': mmsize})
+                started = 1
+            
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
             read = 1
@@ -179,13 +218,13 @@ try:
 # At the end of everything, exit cleanly.
 except (KeyboardInterrupt, SystemExit):
     kit.servo[0].angle = unlockangle
-    if read == 1:
-        os.system("aplay -q " + sounddir + "/Done-01.wav")
-
     print("Chest is now unlocked, bye...")
     if mmpost == 1:
         profileresponse = urllib.request.urlopen(endprofile)
         iftttresponse = requests.post(url, json={'message': 'Alla mynt funna! Kistan är upplåst!', 'displaySeconds': mmendtime, 'size': mmsize})
+
+    if playsound == 1:
+        os.system("aplay -q " + sounddir + "/Done-01.wav")
 
 # Clean up the inputs.
 finally:
