@@ -3,6 +3,7 @@
 
 import RPi.GPIO as GPIO
 from hx711 import HX711
+import time
 import sys
 import os
 import os.path
@@ -32,7 +33,7 @@ unlockangle = 130
 # Start number for information sample (1, 2, 3).
 info = 1
 
-# Coins to collect for the chest to open.
+# Coins to collect for the chest to open (100).
 goal = 5
 
 # Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
@@ -52,8 +53,13 @@ ratio = 855
 # Play the sound (0 for no 1 for yes)
 playsound = 1
 
+# Time to wait before going back to the "normal" profile on the mirror
+#waittime = 300 # Five minutes.
+waittime = 10 # 10 seconds. 
+
 # MagicMirror IP and port.
-mmip = "10.0.0.20"
+#mmip = "10.0.0.20" # Development MagicMirror.
+mmip = "10.0.0.112" # Actual MagicMirror.
 mmport = "8080" 
 
 # Post to the MagicMirror (1 = on or 0 = off)
@@ -67,22 +73,65 @@ mmendtime = 60 # For the last message.
 mmsize = "large"
 
 # MagicMirror Party Profile (set to the MMM-Remote-Control module that changes profile via MMM-ProfileSwitcher)
-startprofile = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Treasure"
-endprofile = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Erik"
+startprofile = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Skattjakt"
+endprofile = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Grattis"
+normalprofile = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload=Louise"
 
 # MagicMirror modules MMM-IFTTTs URL to use.
 url="http://" + mmip + ":" + mmport + "/IFTTT"
 
 # MagicMirror modules to show / hide
 # Module to show 
-showprestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_7_MMM-ImageFit"
-hideprestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_7_MMM-ImageFit"
+#hideallmodules = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=all"
+#showiftttmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_51_MMM-IFTTT"
 
-showstartmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_8_MMM-ImageFit"
-hidestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_8_MMM-ImageFit"
+# Shows: http://localhost/img/magicmirror/decoration/pirate-with-flag.png
+showprestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_13_MMM-ImageFit"
+hideprestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_13_MMM-ImageFit"
 
-showcoinmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_9_MMM-ImageFit"
-hidecoinmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_9_MMM-ImageFit"
+# Shows: http://localhost/img/magicmirror/decoration/coin-zoom-cropped.gif
+showstartmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_14_MMM-ImageFit"
+hidestartmodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_14_MMM-ImageFit"
+
+# Shows: http://localhost/img/magicmirror/decoration/coin-fall.gif
+showcoinmodule1 = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_15_MMM-ImageFit"
+hidecoinmodule1 = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_15_MMM-ImageFit"
+
+# Shows: http://localhost/img/magicmirror/decoration/chest-on-coins.png
+showcoinmodule2 = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_16_MMM-ImageFit"
+hidecoinmodule2 = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_16_MMM-ImageFit"
+
+# Hides the "everyone modules".
+hidemodulebar = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_57_MMM-Modulebar"
+hidehideall = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_59_MMM-HideAll"
+hidetouchnavigation = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module=module_60_MMM-TouchNavigation"
+
+# Shows the "everyone modules".
+showmodulebar = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_57_MMM-Modulebar"
+showhideall = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_59_MMM-HideAll"
+showtouchnavigation = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module=module_60_MMM-TouchNavigation"
+
+
+## Sonos control commands.
+# Set to one if you want to use a Sonos player.
+playonsonos = 1
+# What player (room)
+player = "kontor"
+# Ip to the SONOS http API (https://github.com/jishi/node-sonos-http-api)
+sonosapiip = "10.0.0.21"
+# Port to the SONOS http API.
+sonosapiport= "5005"
+# Volume to play on.
+volume = "15"
+# Playlist name
+playlist = "Skattjakt"
+
+
+setvol = "http://" sonosapiip + ":" + sonosapiport + "/" + player + "/volume/" + volume
+#
+# http://10.0.0.21:5005/kontor/volume/30
+# http://10.0.0.21:5005/kontor/play
+# http://10.0.0.21:5005/kontor/playlist/Snilles%20List
 
 # The directory where the sounds are located.
 sounddir = "Sounds"
@@ -133,7 +182,9 @@ try:
                 print("Collected coins so far: " + str(val))
                 if mmpost == 1:
                     # Show the coin module and the message on the MagicMirror
-                    moduleresponse = urllib.request.urlopen(showcoinmodule)
+                    moduleresponse = urllib.request.urlopen(hidecoinmodule2)
+                    time.sleep(1)
+                    moduleresponse = urllib.request.urlopen(showcoinmodule1)
                     iftttresponse = requests.post(url, json={'message': 'Ni har hittat ' + str(val) + ' av 100 piratmynt. Fortsätt leta...', 'displaySeconds': mmtime, 'size': mmsize})
                 
                 if val == 0:
@@ -141,7 +192,9 @@ try:
                     if mmpost == 1:
                         moduleresponse = urllib.request.urlopen(hideprestartmodule)
                         moduleresponse = urllib.request.urlopen(showstartmodule)
-                        iftttresponse = requests.post(url, json={'message': 'Ni måste samla in 100 piratmynt och peta in dem genom glipan som blir när man försöker öppna kistlocket!', 'displaySeconds': mmtime, 'size': mmsize})
+                        moduleresponse = urllib.request.urlopen(hidecoinmodule2)
+
+                        iftttresponse = requests.post(url, json={'message': 'För att låsa upp kistan helt måste ni samla ihop minst 100 piratmynt och peta in dem genom glipan som blir när man försöker öppna kistlocket!', 'displaySeconds': mmtime, 'size': mmsize})
                     # Only play sounds when playsound is 1
                     if playsound == 1:
                         # Avoids the first message to be played when the program starts with the lid closed.
@@ -186,10 +239,12 @@ try:
                 # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
 
-                # Hide the coin module on the MagicMirror
+                # Hide the coin module 1 and show coin module 2 on the MagicMirror
                 if mmpost == 1:
-                    moduleresponse = urllib.request.urlopen(hidecoinmodule)
-                        
+                    moduleresponse = urllib.request.urlopen(hidecoinmodule1)
+                    time.sleep(2)
+                    moduleresponse = urllib.request.urlopen(showcoinmodule2)
+
                 # If the goal amount of coins are reached. Open the chest.
                 if overgoalok == 1:
                     if val >= goal:
@@ -206,11 +261,25 @@ try:
             if started == 0:
                 # Display Pre start message on the MagicMirror
                 if mmpost == 1:
+                    # Hiding modules
+                    moduleresponse = urllib.request.urlopen(hidemodulebar)
+                    moduleresponse = urllib.request.urlopen(hidehideall)
+                    moduleresponse = urllib.request.urlopen(hidetouchnavigation)
+                    
+                    # Showing Pre-Start Profile
                     profileresponse = urllib.request.urlopen(startprofile)
                     moduleresponse = urllib.request.urlopen(showprestartmodule)
+                    moduleresponse = urllib.request.urlopen(showcoinmodule2)
+                    
+                    # Posting start message.
                     iftttresponse = requests.post(url, json={'message': 'Jakten på piratmynten har börjat!!', 'displaySeconds': mmtime, 'size': mmsize})
+                # Start sonos playr
+                If playonsonos == 1
+                    #urllib.request.urlopen("http://" sonosapiip + ":" + sonosapiport + "/" + player + "/volume/" + volume)
+                    #urllib.request.urlopen("http://" sonosapiip + ":" + sonosapiport + "/" + player + "/playlist/" + playlist)
+
                 started = 1
-            
+
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
             read = 1
@@ -219,12 +288,23 @@ try:
 except (KeyboardInterrupt, SystemExit):
     kit.servo[0].angle = unlockangle
     print("Chest is now unlocked, bye...")
+
     if mmpost == 1:
         profileresponse = urllib.request.urlopen(endprofile)
-        iftttresponse = requests.post(url, json={'message': 'Alla mynt funna! Kistan är upplåst!', 'displaySeconds': mmendtime, 'size': mmsize})
-
+        iftttresponse = requests.post(url, json={'message': 'Grattis!! Ni har nu hittat mer än 100 piratmynt! Kistan är upplåst, Hoppas godiset smakar!', 'displaySeconds': mmendtime, 'size': mmsize})
+        
     if playsound == 1:
         os.system("aplay -q " + sounddir + "/Done-01.wav")
+
+    if mmpost == 1:
+        time.sleep(waittime)
+
+        # Showing modules and switching to the normal profile.
+        profileresponse = urllib.request.urlopen(normalprofile)
+        time.sleep(3)
+        moduleresponse = urllib.request.urlopen(showmodulebar)
+        moduleresponse = urllib.request.urlopen(showhideall)
+        moduleresponse = urllib.request.urlopen(showtouchnavigation)
 
 # Clean up the inputs.
 finally:
