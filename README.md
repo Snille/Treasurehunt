@@ -18,6 +18,9 @@ This is the inside. The "outer" shelf is attached to the load cell and weigh the
 ![Inside Frpnt](/Pictures/Frontside-Inside.png)
 
 
+![Open](/Pictures/Kista-04-small.png)
+![Electronics inside](/Pictures/Kista-03-small.png)
+
 It's built around a 5kg "[Load Cell](https://www.ebay.co.uk/itm/Electronic-Balance-Weighing-Load-Cell-Sensor-5Kg-with-HX711-Module/162241279056?hash=item25c6557450:g:l7gAAOSwh2xYAwSK)" with a HX711 module a "[Treasure Chest](https://fyndgiganten.se/produkt/vidaxl-forvaringslada-i-atervunnet-tra/)" and the Pirates of the Caribbean treasure [Coin](https://www.thingiverse.com/thing:2936980).
 
 
