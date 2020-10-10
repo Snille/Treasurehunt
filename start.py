@@ -53,16 +53,18 @@ ratio = 855
 
 # Play the chest sounds (0 for no 1 for yes).
 playsound = 1
+# The directory where the sounds are located.
+sounddir = "Sounds"
 
 # Time to wait before going back to the "normal" profile on the MagicMirror.
 #waittime = 300 # Five minutes.
 waittime = 10 # 10 seconds. 
 
 # MagicMirror IP and port.
-mmip = "10.0.0.20" # Development MagicMirror.
-#mmip = "10.0.0.112" # Actual MagicMirror.
-mmport = "8181"
-#mmport = "8080"
+#mmip = "10.0.0.20" # Development MagicMirror.
+#mmport = "8181"
+mmip = "10.0.0.112" # Actual MagicMirror.
+mmport = "8080"
 
 # MagicMirror MMM-Remote-Control module commands to build on.
 profilechange = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload="
@@ -112,6 +114,7 @@ hidecoinmodule2 = hidemodule + "module_16_MMM-ImageFit"
 
 # Hides the "everyone modules".
 hidemodulebar = hidemodule + "module_57_MMM-Modulebar"
+
 hidehideall = hidemodule + "module_59_MMM-HideAll"
 hidetouchnavigation = hidemodule + "module_60_MMM-TouchNavigation"
 hidecurrentweather = hidemodule + "module_36_currentweather"
@@ -161,6 +164,8 @@ playlist = "Skattjakt"
 sonosaction = "http://" + sonosapiip + ":" + sonosapiport + "/" + player + "/"
 
 ## Home Assistant stuff
+# Enable HA integration
+haenabeld = 1
 # Set your API key here
 hakey = "-- your API key --"
 # First switch (using the "switch" service).
@@ -172,17 +177,16 @@ initdimval = 5
 # End of dim value for the dimmable light (almost all coins are now in the chest).
 meddimval = 14
 # Full light on (all coins are collected and chest is unlocked).
-enddimval = 250
+enddimval = 25
+#enddimval = 250
 
 # Home Assistant IP
 haip = "10.0.0.249"
-haport: "8123"
+haport = "8123"
 
-haswitchurl = "http://" + haip + ":" + haport + "/api/service/switch"
-halighturl = "http://" + haip + ":" + haport + "/api/service/light"
-
-# The directory where the sounds are located.
-sounddir = "Sounds"
+haswitchurl = "http://" + haip + ":" + haport + "/api/services/switch"
+halighturl = "http://" + haip + ":" + haport + "/api/services/light"
+haheader = {'Authorization': 'Bearer ' + hakey, 'Content-Type': 'application/json'}
 
 # Reserved.
 started = 0
@@ -217,6 +221,7 @@ try:
 
         # Checks what's on the scale (returns only integers and no negative numbers).
         val = max(0, int(hx.get_weight_mean(5)))
+
         # Make sure that the "value" (shown and spoken) of the collected coins don't overshoot the goal (if that's allowed).
         if overgoalok == 1:
             if val >= goal:
@@ -326,6 +331,11 @@ try:
                     # Posting start message.
                     iftttresponse = requests.post(ifttturl, json={'message': iftttprestartmessage, 'displaySeconds': mmtime, 'size': mmsize})
 
+                # Turns on the lights using Home Assistent.
+                if haenabeld == 1:
+                    haresponse = requests.post(haswitchurl + "/turn_on", json={'entity_id': haunit1}, headers = haheader)
+                    haresponse = requests.post(halighturl + "/turn_on", json={'entity_id': haunit2, 'brightness': initdimval}, headers = haheader)
+
                 # Sets the SONOS volume and start the selected playlist on the selected player.
                 if playonsonos == 1:
                     urllib.request.urlopen(sonosaction + "volume/" + str(volume))
@@ -360,6 +370,12 @@ except (KeyboardInterrupt, SystemExit):
             time.sleep(0.1)
         # Stops the playback.
         urllib.request.urlopen(sonosaction + "pause")
+
+    # Set the lights for the end.
+    if haenabeld == 1:
+        haresponse = requests.post(haswitchurl + "/turn_off", json={'entity_id': haunit1}, headers = haheader)
+        haresponse = requests.post(halighturl + "/turn_on", json={'entity_id': haunit2, 'brightness': enddimval}, headers = haheader)
+
     
     # Setting everything on the MagicMirror back to normal.
     if mmpost == 1:
