@@ -160,6 +160,27 @@ playlist = "Skattjakt"
 
 sonosaction = "http://" + sonosapiip + ":" + sonosapiport + "/" + player + "/"
 
+## Home Assistant stuff
+# Set your API key here
+hakey = "-- your API key --"
+# First switch (using the "switch" service).
+haunit1 = "switch.shenzhen_neo_power_plug_08_switch"
+# Second dimmable light (using the "light" service).
+haunit2 = "light.qubino_flush_dimmer_01_level"
+# Initial dim value for the dimmable light (no coins in the chet yet).
+initdimval = 5
+# End of dim value for the dimmable light (almost all coins are now in the chest).
+meddimval = 14
+# Full light on (all coins are collected and chest is unlocked).
+enddimval = 250
+
+# Home Assistant IP
+haip = "10.0.0.249"
+haport: "8123"
+
+haswitchurl = "http://" + haip + ":" + haport + "/api/service/switch"
+halighturl = "http://" + haip + ":" + haport + "/api/service/light"
+
 # The directory where the sounds are located.
 sounddir = "Sounds"
 
