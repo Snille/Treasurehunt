@@ -47,7 +47,7 @@ playsound = 1
 # The directory where the sounds are located.
 sounddir = "Sounds"
 # Set Alsa "headphone jack" volume to "volume".
-volume = 100
+alsavolume = 100
 # Start number for information sample (1, 2, 3).
 info = 1
 
@@ -107,6 +107,7 @@ hideweatherforecast = hidemodule + "module_38_weatherforecast"
 
 # Shows the "everyone modules".
 showmodulebar = showmodule + "module_57_MMM-Modulebar"
+showsonos = showmodule + "module_23_MMM-Sonos"
 showhideall = showmodule + "module_59_MMM-HideAll"
 showtouchnavigation = showmodule + "module_60_MMM-TouchNavigation"
 showcurrentweather = showmodule + "module_36_currentweather"
@@ -152,7 +153,7 @@ sonosapiip = "10.0.0.21"
 # Port to the SONOS http API.
 sonosapiport= "5005"
 # Volume to play on.
-volume = 40
+sonosvolume = 40
 # Playlist name
 playlist = "Skattjakt"
 # Sonos command URL
@@ -162,13 +163,13 @@ sonosaction = "http://" + sonosapiip + ":" + sonosapiport + "/" + player + "/"
 # Enable HA integration
 haenabeld = 1
 # Set your API key here
-#hakey = "-- your API key --"
-hakey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhMWZkYmUxYjM2NTM0OTU4YTc2MjM1MWI3MjFhZTZhNiIsImlhdCI6MTYwMjMzMjM1NCwiZXhwIjoxOTE3NjkyMzU0fQ.e9Ju3Lg95SZxFBZI_GDS8z-OvYQMaoP5f5UNDL61nnA"
+#hakey = "------------------------- Your API key -------------------------"
+hakey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Jpc3MiOiJhMWZkYmUxYjM2NTM0OTU4YTc2MjM1MWI3MjFhZTZhNiIsImlhdCI6MTYwMjMzMjM1NCwiZXhwIjoxOTE3NjkyMzU0fQ.e9Ju3Lg95SZxFBZI_GDS8z-OvYQMaoP5f5UNDL61nnA"
 # First switch (using the "switch" service).
 haunit1 = "switch.shenzhen_neo_power_plug_08_switch"
 # Second dimmable light (using the "light" service).
 haunit2 = "light.qubino_flush_dimmer_01_level"
-# Initial dim value for the dimmable light (no coins in the chet yet).
+# Initial dim value for the dimmable light (no coins in the chest yet).
 initdimval = 5
 # End of dim value for the dimmable light (almost all coins are now in the chest).
 meddimval = 14
@@ -196,7 +197,7 @@ read = 0
 
 # Setting alsa mixer volume.
 m = alsaaudio.Mixer('Headphone')
-m.setvolume(volume)
+m.setvolume(alsavolume)
 
 # Locking the chest.
 print(consoleprestartmessae)
@@ -352,10 +353,22 @@ try:
 
                 # Sets the SONOS volume and start the selected playlist on the selected player.
                 if playonsonos == 1:
-                    urllib.request.urlopen(sonosaction + "volume/" + str(volume))
+                    urllib.request.urlopen(sonosaction + "volume/" + str(sonosvolume))
                     urllib.request.urlopen(sonosaction + "playlist/" + playlist)
 
+                # The hunt is now set to started.
                 started = 1
+
+        # This plays a random laugh during the whole searching, even if no one is lifting the lid.
+        # Generates a random number between 0-200.
+        rand = random.randint(1, 200)
+        # Plays a laugh if the random number matches.
+        if rand == 60:
+            os.system("aplay -q " + sounddir + "/Haha-01.wav")
+        elif rand == 90:
+            os.system("aplay -q " + sounddir + "/Haha-02.wav")
+        elif rand == 150:
+            os.system("aplay -q " + sounddir + "/Haha-03.wav")
 
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
@@ -378,9 +391,9 @@ except (KeyboardInterrupt, SystemExit):
     # Decrees the SONOS volume until it's 1 and then stops playing.
     if playonsonos == 1:
         # Decrees loop.
-        while (volume > 1):
-            volume -= 1
-            urllib.request.urlopen(sonosaction+ "volume/" + str(volume))
+        while (sonosvolume > 1):
+            sonosvolume -= 1
+            urllib.request.urlopen(sonosaction+ "volume/" + str(sonosvolume))
             time.sleep(0.1)
         # Stops the playback.
         urllib.request.urlopen(sonosaction + "pause")
@@ -404,6 +417,7 @@ except (KeyboardInterrupt, SystemExit):
         moduleresponse = urllib.request.urlopen(showcurrentweather)
         moduleresponse = urllib.request.urlopen(showweatherforecast)
         moduleresponse = urllib.request.urlopen(showmodulebar)
+        moduleresponse = urllib.request.urlopen(showsonos)
         moduleresponse = urllib.request.urlopen(showhideall)
         moduleresponse = urllib.request.urlopen(showtouchnavigation)
 
