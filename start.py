@@ -15,71 +15,59 @@ import urllib.request
 import requests
 import alsaaudio
 
-# Set Alsa "headphone jack" volume to "volume".
-volume = 100
-m = alsaaudio.Mixer('Headphone')
-m.setvolume(volume)
-
+## Servo information
 # Set channels to the number of servo channels on your kit.
 # 8 for FeatherWing, 16 for Shield/HAT/Bonnet.
 kit = ServoKit(channels=16)
-
 # Servo locking chest angle.
 lockangle = 15
-
 # Servo unlocking chest angle.
 unlockangle = 130
 
-# Start number for information sample (1, 2, 3).
-info = 1
-
-# Coins to collect for the chest to open (100).
-#goal = 100
-goal = 5
-
-# Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
-overgoalok = 1
-
-# Pin used for the lid switch. Low when the lid is closed.
-lidpin = 23
-
-# Secret open switch Pin.
-secretpin = 24
-
+## Coin stuff
 # Coin weight number ratio in House: 855
 ratio = 855
 # Coin weight number ratio in Workshop: 827
 #ratio = 827
+# Coins to collect for the chest to open (100).
+#goal = 100
+goal = 10
+# Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
+overgoalok = 1
 
+## Button stuff
+# Pin used for the lid switch. Low when the lid is closed.
+lidpin = 23
+# Secret open switch Pin.
+secretpin = 24
+
+## Sound settings
 # Play the chest sounds (0 for no 1 for yes).
 playsound = 1
 # The directory where the sounds are located.
 sounddir = "Sounds"
+# Set Alsa "headphone jack" volume to "volume".
+volume = 100
+# Start number for information sample (1, 2, 3).
+info = 1
+
+## MagicMirror stuff
+# Post to the MagicMirror (1 = on or 0 = off).
+mmpost = 1
+# MagicMirror IP and port.
+mmip = "10.0.0.20" # Development MagicMirror.
+mmport = "8181"
+#mmip = "10.0.0.112" # Actual MagicMirror.
+#mmport = "8080"
 
 # Time to wait before going back to the "normal" profile on the MagicMirror.
 #waittime = 300 # Five minutes.
 waittime = 10 # 10 seconds. 
 
-# MagicMirror IP and port.
-#mmip = "10.0.0.20" # Development MagicMirror.
-#mmport = "8181"
-mmip = "10.0.0.112" # Actual MagicMirror.
-mmport = "8080"
-
 # MagicMirror MMM-Remote-Control module commands to build on.
 profilechange = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload="
 showmodule = "http://" + mmip + ":" + mmport + "/remote?action=SHOW&module="
 hidemodule = "http://" + mmip + ":" + mmport + "/remote?action=HIDE&module="
-
-# Post to the MagicMirror (1 = on or 0 = off).
-mmpost = 1
-
-# Seconds to show the IFTTT messages on the MagicMirror (shows until time is up or a new message is sent).
-mmtime = 3600 # For each message.
-mmendtime = 300 # For the last message.
-
-# Size of the MagicMirror IFTTT message (small, medium, large).
-mmsize = "large"
 
 # MagicMirror treasure hunt Profile (sent to the MMM-Remote-Control module that changes profile via MMM-ProfileSwitcher).
 startprofile = profilechange + "Skattjakt"
@@ -88,10 +76,7 @@ endprofile = profilechange + "Grattis"
 # MagicMirror "normal" profile.
 normalprofile = profilechange + "Louise"
 
-# MagicMirror MMM-IFTTTs modules URL to use.
-ifttturl = "http://" + mmip + ":" + mmport + "/IFTTT"
-
-# MagicMirror modules to show / hide stuff.
+# MagicMirror modules to show / hide.
 # Shows and hides the IFTTT module at the end.
 showiftttmodule = showmodule + "module_52_MMM-IFTTT"
 hideiftttmodule = hidemodule + "module_52_MMM-IFTTT"
@@ -114,7 +99,7 @@ hidecoinmodule2 = hidemodule + "module_16_MMM-ImageFit"
 
 # Hides the "everyone modules".
 hidemodulebar = hidemodule + "module_57_MMM-Modulebar"
-
+hidesonos = hidemodule + "module_23_MMM-Sonos"
 hidehideall = hidemodule + "module_59_MMM-HideAll"
 hidetouchnavigation = hidemodule + "module_60_MMM-TouchNavigation"
 hidecurrentweather = hidemodule + "module_36_currentweather"
@@ -127,7 +112,17 @@ showtouchnavigation = showmodule + "module_60_MMM-TouchNavigation"
 showcurrentweather = showmodule + "module_36_currentweather"
 showweatherforecast = showmodule + "module_38_weatherforecast"
 
-## IFTTT messages sent to the MagicMirror.
+# Seconds to show the IFTTT messages on the MagicMirror (shows until time is up or a new message is sent).
+# MagicMirror MMM-IFTTTs modules URL to use.
+ifttturl = "http://" + mmip + ":" + mmport + "/IFTTT"
+# Time for each message.
+mmtime = 3600
+# Tiem for the last message.
+mmendtime = 300
+# Size of the MagicMirror IFTTT message (small, medium, large).
+mmsize = "large"
+
+# IFTTT messages sent to the MagicMirror.
 # Pre start message, displayed when the hunt begins and the chest locks.
 iftttprestartmessage = "Jakten på piratmynten har börjat!!"
 # End message, displayed when the hunt is over and the chest unlocks. 
@@ -157,17 +152,18 @@ sonosapiip = "10.0.0.21"
 # Port to the SONOS http API.
 sonosapiport= "5005"
 # Volume to play on.
-volume = 20
+volume = 40
 # Playlist name
 playlist = "Skattjakt"
-
+# Sonos command URL
 sonosaction = "http://" + sonosapiip + ":" + sonosapiport + "/" + player + "/"
 
 ## Home Assistant stuff
 # Enable HA integration
 haenabeld = 1
 # Set your API key here
-hakey = "-- your API key --"
+#hakey = "-- your API key --"
+hakey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhMWZkYmUxYjM2NTM0OTU4YTc2MjM1MWI3MjFhZTZhNiIsImlhdCI6MTYwMjMzMjM1NCwiZXhwIjoxOTE3NjkyMzU0fQ.e9Ju3Lg95SZxFBZI_GDS8z-OvYQMaoP5f5UNDL61nnA"
 # First switch (using the "switch" service).
 haunit1 = "switch.shenzhen_neo_power_plug_08_switch"
 # Second dimmable light (using the "light" service).
@@ -180,17 +176,27 @@ meddimval = 14
 enddimval = 25
 #enddimval = 250
 
-# Home Assistant IP
+# Home Assistant IP.
 haip = "10.0.0.249"
+# Home Assistant Port.
 haport = "8123"
 
+# HA URL for manipulating switches.
 haswitchurl = "http://" + haip + ":" + haport + "/api/services/switch"
+# HA URL for manipulating lights.
 halighturl = "http://" + haip + ":" + haport + "/api/services/light"
+# HA Header (with autentication).
 haheader = {'Authorization': 'Bearer ' + hakey, 'Content-Type': 'application/json'}
+
+## Config ends here!
 
 # Reserved.
 started = 0
 read = 0
+
+# Setting alsa mixer volume.
+m = alsaaudio.Mixer('Headphone')
+m.setvolume(volume)
 
 # Locking the chest.
 print(consoleprestartmessae)
@@ -299,6 +305,13 @@ try:
                     time.sleep(2)
                     moduleresponse = urllib.request.urlopen(showcoinmodule2)
 
+                # Turns up the lights a bit depending on the amount of coins found using Home Assistent.
+                if haenabeld == 1:
+                    diff = meddimval - initdimval
+                    split = goal / diff
+                    dimval = round(val / split) + initdimval
+                    haresponse = requests.post(halighturl + "/turn_on", json={'entity_id': haunit2, 'brightness': dimval}, headers = haheader)
+
                 # If the goal amount of coins are reached. Open the chest.
                 if overgoalok == 1:
                     if val >= goal:
@@ -317,6 +330,7 @@ try:
                 if mmpost == 1:
                     # Hiding the "everyone modules".
                     moduleresponse = urllib.request.urlopen(hidemodulebar)
+                    moduleresponse = urllib.request.urlopen(hidesonos)
                     moduleresponse = urllib.request.urlopen(hidehideall)
                     moduleresponse = urllib.request.urlopen(hidetouchnavigation)
                     moduleresponse = urllib.request.urlopen(hidecurrentweather)
