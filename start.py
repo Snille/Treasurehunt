@@ -165,6 +165,7 @@ haenabeld = 1
 # Set your API key here
 #hakey = "------------------------- Your API key -------------------------"
 hakey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Jpc3MiOiJhMWZkYmUxYjM2NTM0OTU4YTc2MjM1MWI3MjFhZTZhNiIsImlhdCI6MTYwMjMzMjM1NCwiZXhwIjoxOTE3NjkyMzU0fQ.e9Ju3Lg95SZxFBZI_GDS8z-OvYQMaoP5f5UNDL61nnA"
+
 # First switch (using the "switch" service).
 haunit1 = "switch.shenzhen_neo_power_plug_08_switch"
 # Second dimmable light (using the "light" service).
@@ -287,15 +288,12 @@ try:
                         os.system("aplay -q " + fullpath)
                         os.system("aplay -q " + sounddir + "/Count-02.wav")
 
-                    # Generates a random number between 0-8.
-                    rand = random.randint(1, 6)
-                    # Plays a laugh if the random number matches.
-                    if rand == 2:
-                        os.system("aplay -q " + sounddir + "/Haha-01.wav")
-                    elif rand == 4:
-                        os.system("aplay -q " + sounddir + "/Haha-02.wav")
-                    elif rand == 6:
-                        os.system("aplay -q " + sounddir + "/Haha-03.wav")
+                    # Generates a random number between 1-10.
+                    rand = random.randint(1, 20)
+                    # Plays a laugh corresponding to the random number (if it exists).
+                    fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
+                    if path.exists(fullpath):
+                        os.system("aplay -q " + fullpath)
 
                 # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
@@ -360,15 +358,12 @@ try:
                 started = 1
 
         # This plays a random laugh during the whole searching, even if no one is lifting the lid.
-        # Generates a random number between 0-200.
-        rand = random.randint(1, 200)
-        # Plays a laugh if the random number matches.
-        if rand == 60:
-            os.system("aplay -q " + sounddir + "/Haha-01.wav")
-        elif rand == 90:
-            os.system("aplay -q " + sounddir + "/Haha-02.wav")
-        elif rand == 150:
-            os.system("aplay -q " + sounddir + "/Haha-03.wav")
+        # Generates a random number between 1-200.
+        rand = random.randint(1, 100)
+        # Plays a laugh corresponding to the random number (if it exists).
+        fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
+        if path.exists(fullpath):
+            os.system("aplay -q " + fullpath)
 
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
