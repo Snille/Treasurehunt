@@ -55,10 +55,10 @@ info = 1
 # Post to the MagicMirror (1 = on or 0 = off).
 mmpost = 1
 # MagicMirror IP and port.
-mmip = "10.0.0.20" # Development MagicMirror.
-mmport = "8181"
-#mmip = "10.0.0.112" # Actual MagicMirror.
-#mmport = "8080"
+#mmip = "10.0.0.20" # Development MagicMirror.
+#mmport = "8181"
+mmip = "10.0.0.112" # Actual MagicMirror.
+mmport = "8080"
 
 # Time to wait before going back to the "normal" profile on the MagicMirror.
 #waittime = 300 # Five minutes.
@@ -153,7 +153,7 @@ sonosapiip = "10.0.0.21"
 # Port to the SONOS http API.
 sonosapiport= "5005"
 # Volume to play on.
-sonosvolume = 40
+sonosvolume = 50
 # Playlist name
 playlist = "Skattjakt"
 # Sonos command URL
@@ -173,9 +173,9 @@ haunit2 = "light.qubino_flush_dimmer_01_level"
 # Initial dim value for the dimmable light (no coins in the chest yet).
 initdimval = 5
 # End of dim value for the dimmable light (almost all coins are now in the chest).
-meddimval = 14
+meddimval = 10
 # Full light on (all coins are collected and chest is unlocked).
-enddimval = 25
+enddimval = 150
 #enddimval = 250
 
 # Home Assistant IP.
