@@ -78,40 +78,40 @@ normalprofile = profilechange + "Louise"
 
 # MagicMirror modules to show / hide.
 # Shows and hides the IFTTT module at the end.
-showiftttmodule = showmodule + "module_52_MMM-IFTTT"
-hideiftttmodule = hidemodule + "module_52_MMM-IFTTT"
+showiftttmodule = showmodule + "module_54_MMM-IFTTT"
+hideiftttmodule = hidemodule + "module_54_MMM-IFTTT"
 
 # Shows and hides: http://localhost/img/magicmirror/decoration/pirate-with-flag.png
-showprestartmodule = showmodule + "module_13_MMM-ImageFit"
-hideprestartmodule = hidemodule + "module_13_MMM-ImageFit"
+showprestartmodule = showmodule + "module_15_MMM-ImageFit"
+hideprestartmodule = hidemodule + "module_15_MMM-ImageFit"
 
 # Shows and hides: http://localhost/img/magicmirror/decoration/coin-zoom-cropped.gif
-showstartmodule = showmodule + "module_14_MMM-ImageFit"
-hidestartmodule = hidemodule + "module_14_MMM-ImageFit"
+showstartmodule = showmodule + "module_16_MMM-ImageFit"
+hidestartmodule = hidemodule + "module_16_MMM-ImageFit"
 
 # Shows and hides: http://localhost/img/magicmirror/decoration/coin-fall.gif
-showcoinmodule1 = showmodule + "module_15_MMM-ImageFit"
-hidecoinmodule1 = hidemodule + "module_15_MMM-ImageFit"
+showcoinmodule1 = showmodule + "module_17_MMM-ImageFit"
+hidecoinmodule1 = hidemodule + "module_17_MMM-ImageFit"
 
 # Shows and hides: http://localhost/img/magicmirror/decoration/chest-on-coins.png
-showcoinmodule2 = showmodule + "module_16_MMM-ImageFit"
-hidecoinmodule2 = hidemodule + "module_16_MMM-ImageFit"
+showcoinmodule2 = showmodule + "module_18_MMM-ImageFit"
+hidecoinmodule2 = hidemodule + "module_18_MMM-ImageFit"
 
 # Hides the "everyone modules".
-hidemodulebar = hidemodule + "module_57_MMM-Modulebar"
-hidesonos = hidemodule + "module_23_MMM-Sonos"
-hidehideall = hidemodule + "module_59_MMM-HideAll"
-hidetouchnavigation = hidemodule + "module_60_MMM-TouchNavigation"
-hidecurrentweather = hidemodule + "module_36_currentweather"
-hideweatherforecast = hidemodule + "module_38_weatherforecast"
+hidemodulebar = hidemodule + "module_59_MMM-Modulebar"
+hidesonos = hidemodule + "module_25_MMM-Sonos"
+hidehideall = hidemodule + "module_61_MMM-HideAll"
+hidetouchnavigation = hidemodule + "module_62_MMM-TouchNavigation"
+hidecurrentweather = hidemodule + "module_38_currentweather"
+hideweatherforecast = hidemodule + "module_40_weatherforecast"
 
 # Shows the "everyone modules".
-showmodulebar = showmodule + "module_57_MMM-Modulebar"
-showsonos = showmodule + "module_23_MMM-Sonos"
-showhideall = showmodule + "module_59_MMM-HideAll"
-showtouchnavigation = showmodule + "module_60_MMM-TouchNavigation"
-showcurrentweather = showmodule + "module_36_currentweather"
-showweatherforecast = showmodule + "module_38_weatherforecast"
+showmodulebar = showmodule + "module_59_MMM-Modulebar"
+showsonos = showmodule + "module_25_MMM-Sonos"
+showhideall = showmodule + "module_61_MMM-HideAll"
+showtouchnavigation = showmodule + "module_62_MMM-TouchNavigation"
+showcurrentweather = showmodule + "module_38_currentweather"
+showweatherforecast = showmodule + "module_40_weatherforecast"
 
 # Seconds to show the IFTTT messages on the MagicMirror (shows until time is up or a new message is sent).
 # MagicMirror MMM-IFTTTs modules URL to use.
