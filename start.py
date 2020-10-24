@@ -30,8 +30,8 @@ ratio = 855
 # Coin weight number ratio in Workshop: 827
 #ratio = 827
 # Coins to collect for the chest to open (100).
-#goal = 100
-goal = 10
+goal = 100
+#goal = 10
 # Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
 overgoalok = 1
 
@@ -61,8 +61,8 @@ mmip = "10.0.0.112" # Actual MagicMirror.
 mmport = "8080"
 
 # Time to wait before going back to the "normal" profile on the MagicMirror.
-#waittime = 300 # Five minutes.
-waittime = 10 # 10 seconds. 
+waittime = 300 # Five minutes.
+#waittime = 10 # 10 seconds. 
 
 # MagicMirror MMM-Remote-Control module commands to build on.
 profilechange = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload="
