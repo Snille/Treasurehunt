@@ -118,7 +118,7 @@ showweatherforecast = showmodule + "module_40_weatherforecast"
 ifttturl = "http://" + mmip + ":" + mmport + "/IFTTT"
 # Time for each message.
 mmtime = 3600
-# Tiem for the last message.
+# Time for the end message.
 mmendtime = 300
 # Size of the MagicMirror IFTTT message (small, medium, large).
 mmsize = "large"
@@ -141,7 +141,7 @@ consolestartmessage = ["Chest is locked, I will now keep track of collected coin
 # Repeated message when coins are added.
 consolecoinmessage = "Collected coins so far: "
 # End message, when the hunt is over.
-consoleendmessage = "Chest is now unlocked, I hope you hade a good hunt! :)"
+consoleendmessage = "Chest is now unlocked, I hope you had a good hunt! :)"
 
 ## SONOS control commands.
 # Set to 1 if you want to use a SONOS player.
@@ -162,14 +162,24 @@ sonosaction = "http://" + sonosapiip + ":" + sonosapiport + "/" + player + "/"
 ## Home Assistant stuff
 # Enable HA integration
 haenabeld = 1
-# Set your API key here
-#hakey = "------------------------- Your API key -------------------------"
-hakey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Jpc3MiOiJhMWZkYmUxYjM2NTM0OTU4YTc2MjM1MWI3MjFhZTZhNiIsImlhdCI6MTYwMjMzMjM1NCwiZXhwIjoxOTE3NjkyMzU0fQ.e9Ju3Lg95SZxFBZI_GDS8z-OvYQMaoP5f5UNDL61nnA"
 
-# First switch (using the "switch" service).
+# Set your Home Assistant API key in the file .apikey
+# Reads the HA key file.
+with open(".apikey", "r") as file:
+    hakey = file.readline()
+    hakey = hakey.rstrip("\n")
+    for last_line in file:
+        pass
+
+# If you don't want to use the .apikey file, you can set the key below.
+#hakey = "------------------------- Your API key -------------------------"
+
+# Switch (using the "switch" service).
 haunit1 = "switch.shenzhen_neo_power_plug_08_switch"
-# Second dimmable light (using the "light" service).
+# Dimmable light (using the "light" service).
 haunit2 = "light.qubino_flush_dimmer_01_level"
+# Window cover (using the "cover" service).
+haunit3 = "cover.qubino_flush_shutter_dc_01_level"
 # Initial dim value for the dimmable light (no coins in the chest yet).
 initdimval = 5
 # End of dim value for the dimmable light (almost all coins are now in the chest).
@@ -187,6 +197,9 @@ haport = "8123"
 haswitchurl = "http://" + haip + ":" + haport + "/api/services/switch"
 # HA URL for manipulating lights.
 halighturl = "http://" + haip + ":" + haport + "/api/services/light"
+# HA URL for manipulating window covers.
+hacoverurl = "http://" + haip + ":" + haport + "/api/services/cover"
+
 # HA Header (with autentication).
 haheader = {'Authorization': 'Bearer ' + hakey, 'Content-Type': 'application/json'}
 
@@ -346,6 +359,7 @@ try:
 
                 # Turns on the lights using Home Assistent.
                 if haenabeld == 1:
+                    haresponse = requests.post(hacoverurl + "/close_cover", json={'entity_id': haunit3}, headers = haheader)
                     haresponse = requests.post(haswitchurl + "/turn_on", json={'entity_id': haunit1}, headers = haheader)
                     haresponse = requests.post(halighturl + "/turn_on", json={'entity_id': haunit2, 'brightness': initdimval}, headers = haheader)
 
@@ -395,6 +409,7 @@ except (KeyboardInterrupt, SystemExit):
 
     # Set the lights for the end.
     if haenabeld == 1:
+        haresponse = requests.post(hacoverurl + "/open_cover", json={'entity_id': haunit3}, headers = haheader)
         haresponse = requests.post(haswitchurl + "/turn_off", json={'entity_id': haunit1}, headers = haheader)
         haresponse = requests.post(halighturl + "/turn_on", json={'entity_id': haunit2, 'brightness': enddimval}, headers = haheader)
 
