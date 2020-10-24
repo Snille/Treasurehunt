@@ -1,5 +1,5 @@
-# ALI Key file
-.apikey
+# API Key file
+/.apikey
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
