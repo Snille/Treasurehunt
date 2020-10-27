@@ -97,21 +97,30 @@ hidecoinmodule1 = hidemodule + "module_17_MMM-ImageFit"
 showcoinmodule2 = showmodule + "module_18_MMM-ImageFit"
 hidecoinmodule2 = hidemodule + "module_18_MMM-ImageFit"
 
-# Hides the "everyone modules".
-hidemodulebar = hidemodule + "module_59_MMM-Modulebar"
-hidesonos = hidemodule + "module_25_MMM-Sonos"
-hidehideall = hidemodule + "module_61_MMM-HideAll"
-hidetouchnavigation = hidemodule + "module_62_MMM-TouchNavigation"
-hidecurrentweather = hidemodule + "module_38_currentweather"
-hideweatherforecast = hidemodule + "module_40_weatherforecast"
-
-# Shows the "everyone modules".
+# Shows and hides the "everyone modules" below.
+# Shows and hides: MMM-Modulebar
 showmodulebar = showmodule + "module_59_MMM-Modulebar"
+hidemodulebar = hidemodule + "module_59_MMM-Modulebar"
+
+# Shows and hides: MMM-Sonos
 showsonos = showmodule + "module_25_MMM-Sonos"
+hidesonos = hidemodule + "module_25_MMM-Sonos"
+
+# Shows and hides: MMM-HideAll
 showhideall = showmodule + "module_61_MMM-HideAll"
+hidehideall = hidemodule + "module_61_MMM-HideAll"
+
+# Shows and hides: MMM-TouchNavigation
 showtouchnavigation = showmodule + "module_62_MMM-TouchNavigation"
+hidetouchnavigation = hidemodule + "module_62_MMM-TouchNavigation"
+
+# Shows and hides: currentwather
 showcurrentweather = showmodule + "module_38_currentweather"
+hidecurrentweather = hidemodule + "module_38_currentweather"
+
+# Shows and hides: weaterforcast
 showweatherforecast = showmodule + "module_40_weatherforecast"
+hideweatherforecast = hidemodule + "module_40_weatherforecast"
 
 # Seconds to show the IFTTT messages on the MagicMirror (shows until time is up or a new message is sent).
 # MagicMirror MMM-IFTTTs modules URL to use.
@@ -365,8 +374,8 @@ try:
 
                 # Sets the SONOS volume and start the selected playlist on the selected player.
                 if playonsonos == 1:
-                    urllib.request.urlopen(sonosaction + "volume/" + str(sonosvolume))
-                    urllib.request.urlopen(sonosaction + "playlist/" + playlist)
+                    sonosresponse = urllib.request.urlopen(sonosaction + "volume/" + str(sonosvolume))
+                    sonosresponse = urllib.request.urlopen(sonosaction + "playlist/" + playlist)
 
                 # The hunt is now set to started.
                 started = 1
@@ -402,10 +411,10 @@ except (KeyboardInterrupt, SystemExit):
         # Decrees loop.
         while (sonosvolume > 1):
             sonosvolume -= 1
-            urllib.request.urlopen(sonosaction+ "volume/" + str(sonosvolume))
+            sonosresponse = urllib.request.urlopen(sonosaction+ "volume/" + str(sonosvolume))
             time.sleep(0.1)
         # Stops the playback.
-        urllib.request.urlopen(sonosaction + "pause")
+        sonosresponse = urllib.request.urlopen(sonosaction + "pause")
 
     # Set the lights for the end.
     if haenabeld == 1:
