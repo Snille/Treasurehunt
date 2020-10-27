@@ -134,12 +134,16 @@ mmsize = "large"
 
 # IFTTT messages sent to the MagicMirror.
 # Pre start message, displayed when the hunt begins and the chest locks.
+# English: "The hunt for the pirate coins has begun!"
 iftttprestartmessage = "Jakten på piratmynten har börjat!!"
-# End message, displayed when the hunt is over and the chest unlocks. 
-iftttendmessage = "Grattis!! Ni har hittat mer än 100 piratmynt! Kistan är upplåst, Hoppas godiset smakar!"
+# End message, displayed when the hunt is over and the chest unlocks.
+# English: "Congratulations!! You have found the 100 pirate coins, the chest is unlocked. I hope the candy is good!"
+iftttendmessage = "Grattis!! Ni har hittat 100 piratmynt! Kistan är upplåst, Hoppas godiset smakar!"
 # Start message, displays when the lid is opened for the first time and until the first coin is added.
-iftttstartmessage = "För att låsa upp kistan helt måste ni samla ihop minst 100 piratmynt och peta in dem genom glipan som blir när man försöker öppna kistlocket!"
+# English: "To unlock the chest, you have to push at least 100 pirate coins in to the slot that opens up when trying to open the lid!"
+iftttstartmessage = "För att låsa upp kistan helt måste ni peta in minst 100 piratmynt genom glipan som blir när man försöker öppna kistlocket!"
 # Repeated message when coins are added (two parts). The collected number of coins is inserted in between the messages.
+# English: "You have found ", " pirate coins, keep on searching..."
 iftttcoinmessage = ["Ni har hittat ", " av 100 piratmynt. Fortsätt leta..."]
 
 ## Console messages.
