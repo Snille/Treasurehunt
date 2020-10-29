@@ -40,6 +40,20 @@ overgoalok = 1
 lidpin = 23
 # Secret open switch Pin.
 secretpin = 24
+# Smoke machine pins
+# Smoke generator avalable (1 or 0).
+usesmoke = 1
+# When smoke machine is ready (warm). Set to 0 if not available on your smoke machine.
+smokereadypin = 0
+#smokereadypin = 27
+# Smoke activation trigger.
+smokeactivatepin = 17
+# Smoke machine time in seconds (if the ready signal is not available).
+smokewarmuptime = 240
+# Fill the room with smoke at start (1 or 0).
+smokefill = 1
+# How long (in seconds) to fill the room with smoke.
+smokefilltime = 60
 
 ## Sound settings
 # Play the chest sounds (0 for no 1 for yes).
@@ -148,13 +162,21 @@ iftttcoinmessage = ["Ni har hittat ", " av 100 piratmynt. Fortsätt leta..."]
 
 ## Console messages.
 # Pre start message, displayed when the script locks the chest.
-consoleprestartmessae = "The treasure hunt has started! Locking the chest."
+consoleprestartmessae = "The treasure hunt has now started! Locking the chest."
 # Start message in two parts when the chest is locked and waiting. The goal number is added in between the messages.
 consolestartmessage = ["Chest is locked, I will now keep track of collected coins in an infinite loop. To exit press CTRL + C or collect","coins to unlock the chest."]
 # Repeated message when coins are added.
 consolecoinmessage = "Collected coins so far: "
 # End message, when the hunt is over.
 consoleendmessage = "Chest is now unlocked, I hope you had a good hunt! :)"
+# Smoke machine setup message.
+consolesmokesetup = "Turning on smoke machine so it can warm up."
+# Smoke machine is ready.
+consolesmokeready = "Smoke machine is warm, continueing..."
+# Smoke filling the room message.
+consolesmokefill = "Filling room with smoke..."
+# Smoke "puff" time. The time in seconds the smoke machine will puff out new smoke during the "laughs".
+smokepufftime = 1
 
 ## SONOS control commands.
 # Set to 1 if you want to use a SONOS player.
@@ -193,6 +215,8 @@ haunit1 = "switch.shenzhen_neo_power_plug_08_switch"
 haunit2 = "light.qubino_flush_dimmer_01_level"
 # Window cover (using the "cover" service).
 haunit3 = "cover.qubino_flush_shutter_dc_01_level"
+# Smoke machine power socket Switch (using the "switch" service again). 
+haunit4 = "switch.aeon_smart_switch_gen5_01_switch"
 # Initial dim value for the dimmable light (no coins in the chest yet).
 initdimval = 5
 # End of dim value for the dimmable light (almost all coins are now in the chest).
@@ -244,7 +268,31 @@ try:
     # Setting up the input buttons.
     GPIO.setup(lidpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(secretpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
+    
+    # Starting to warm the smokemachine.
+    if usesmoke == 1:
+        print(consolesmokesetup)
+        # Turns on the smoke machine on using Home Assistent.
+        if haenabeld == 1:
+            haresponse = requests.post(haswitchurl + "/turn_on", json={'entity_id': haunit4}, headers = haheader)
+        if smokereadypin !== 0:
+            GPIO.setup(smokereadypin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            while GPIO.input(smokereadypin):
+                time.sleep(0.5)
+        else 
+            time.sleep(smokewarmuptime)
+        # Smoke machine is warm.
+        print(consolesmokeready)
+        # Setting up smoke machine trigger pin.
+        GPIO.setup(smokeactivatepin, GPIO.OUT)               
+        
+        # Filling the room with smoke if activated.
+        if smokefill == 1:
+            print(consolesmokefill)
+            GPIO.output(smokeactivatepin, 1) 
+            time.sleep(smokefilltime)
+            GPIO.output(smokeactivatepin, 0) 
+    
     print(consolestartmessage[0], goal, consolestartmessage[1])
 
     # Calculating the scale of one single coin.
@@ -320,6 +368,11 @@ try:
                     fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
                     if path.exists(fullpath):
                         os.system("aplay -q " + fullpath)
+                        if usesmoke == 1:
+                            GPIO.output(smokeactivatepin, 1)
+                            time.sleep(smokepufftime)
+                            GPIO.output(smokeactivatepin, 0) 
+
 
                 # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
@@ -391,7 +444,11 @@ try:
         fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
         if path.exists(fullpath):
             os.system("aplay -q " + fullpath)
-
+            if usesmoke == 1:
+                GPIO.output(smokeactivatepin, 1)
+                time.sleep(smokepufftime)
+                GPIO.output(smokeactivatepin, 0) 
+            
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
             read = 1
@@ -422,6 +479,7 @@ except (KeyboardInterrupt, SystemExit):
 
     # Set the lights for the end.
     if haenabeld == 1:
+        haresponse = requests.post(haswitchurl + "/turn_off", json={'entity_id': haunit4}, headers = haheader)
         haresponse = requests.post(hacoverurl + "/open_cover", json={'entity_id': haunit3}, headers = haheader)
         haresponse = requests.post(haswitchurl + "/turn_off", json={'entity_id': haunit1}, headers = haheader)
         haresponse = requests.post(halighturl + "/turn_on", json={'entity_id': haunit2, 'brightness': enddimval}, headers = haheader)
