@@ -279,6 +279,9 @@ try:
             GPIO.setup(smokereadypin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             while GPIO.input(smokereadypin):
                 time.sleep(0.5)
+            # A better way? Maybe... Have to try it..
+            #try:  
+            #    GPIO.wait_for_edge(smokereadypin, GPIO.FALLING)  
         else 
             time.sleep(smokewarmuptime)
         # Smoke machine is warm.
