@@ -30,8 +30,8 @@ ratio = 855
 # Coin weight number ratio in Workshop: 827
 #ratio = 827
 # Coins to collect for the chest to open (100).
-goal = 100
-#goal = 10
+#goal = 100
+goal = 3
 # Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
 overgoalok = 1
 
@@ -40,20 +40,24 @@ overgoalok = 1
 lidpin = 23
 # Secret open switch Pin.
 secretpin = 24
-# Smoke machine pins
+
+## Smoke machine stuff.
 # Smoke generator avalable (1 or 0).
 usesmoke = 1
 # When smoke machine is ready (warm). Set to 0 if not available on your smoke machine.
 smokereadypin = 0
 #smokereadypin = 27
-# Smoke activation trigger.
+# Smoke activation trigger When activated smoke is generated.
 smokeactivatepin = 17
-# Smoke machine time in seconds (if the ready signal is not available).
-smokewarmuptime = 240
+# Smoke machine warm up time in seconds (if the ready signal is not available).
+#smokewarmuptime = 240
+smokewarmuptime = 10
 # Fill the room with smoke at start (1 or 0).
 smokefill = 1
 # How long (in seconds) to fill the room with smoke.
-smokefilltime = 60
+smokefilltime = 20
+# Smoke "puff" time. The time in seconds the smoke machine will puff out new smoke during the "laughs".
+smokepufftime = 1
 
 ## Sound settings
 # Play the chest sounds (0 for no 1 for yes).
@@ -175,8 +179,6 @@ consolesmokesetup = "Turning on smoke machine so it can warm up."
 consolesmokeready = "Smoke machine is warm, continueing..."
 # Smoke filling the room message.
 consolesmokefill = "Filling room with smoke..."
-# Smoke "puff" time. The time in seconds the smoke machine will puff out new smoke during the "laughs".
-smokepufftime = 1
 
 ## SONOS control commands.
 # Set to 1 if you want to use a SONOS player.
@@ -268,34 +270,34 @@ try:
     # Setting up the input buttons.
     GPIO.setup(lidpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(secretpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    
+
     # Starting to warm the smokemachine.
     if usesmoke == 1:
         print(consolesmokesetup)
         # Turns on the smoke machine on using Home Assistent.
         if haenabeld == 1:
             haresponse = requests.post(haswitchurl + "/turn_on", json={'entity_id': haunit4}, headers = haheader)
-        if smokereadypin !== 0:
+        if smokereadypin != 0:
             GPIO.setup(smokereadypin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             while GPIO.input(smokereadypin):
                 time.sleep(0.5)
             # A better way? Maybe... Have to try it..
-            #try:  
-            #    GPIO.wait_for_edge(smokereadypin, GPIO.FALLING)  
-        else 
+            #try:
+            #    GPIO.wait_for_edge(smokereadypin, GPIO.FALLING)
+        else:
             time.sleep(smokewarmuptime)
         # Smoke machine is warm.
         print(consolesmokeready)
         # Setting up smoke machine trigger pin.
-        GPIO.setup(smokeactivatepin, GPIO.OUT)               
-        
+        GPIO.setup(smokeactivatepin, GPIO.OUT)
+
         # Filling the room with smoke if activated.
         if smokefill == 1:
             print(consolesmokefill)
-            GPIO.output(smokeactivatepin, 1) 
+            GPIO.output(smokeactivatepin, 1)
             time.sleep(smokefilltime)
-            GPIO.output(smokeactivatepin, 0) 
-    
+            GPIO.output(smokeactivatepin, 0)
+
     print(consolestartmessage[0], goal, consolestartmessage[1])
 
     # Calculating the scale of one single coin.
@@ -353,7 +355,7 @@ try:
                             os.system("aplay -q " + sounddir + "/Explain-03.wav")
                             os.system("aplay -q " + sounddir + "/Haha-03.wav")
                             info = 1
-                
+
                 # Playing the chest count sounds.
                 if playsound == 1:
                     # Setting up the count sound sample.
