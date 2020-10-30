@@ -366,16 +366,6 @@ try:
 
                     # If the number sound exists, play it.
                     if path.exists(fullpath):
-                        os.system("aplay -q " + sounddir + "/Count-01.wav")
-                        os.system("aplay -q " + fullpath)
-                        os.system("aplay -q " + sounddir + "/Count-02.wav")
-
-                    # Generates a random number between 1-10.
-                    rand = random.randint(1, 20)
-                    # Plays a laugh corresponding to the random number (if it exists).
-                    fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
-                    if path.exists(fullpath):
-                        os.system("aplay -q " + fullpath)
                         if usesmoke == 1:
                             # Setting up smoke machine trigger pin.
                             GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
@@ -385,6 +375,25 @@ try:
                             time.sleep(smokepufftime)
                             # Deactivating smoke.
                             GPIO.setup(smokeactivatepin, GPIO.IN)
+                        os.system("aplay -q " + sounddir + "/Count-01.wav")
+                        os.system("aplay -q " + fullpath)
+                        os.system("aplay -q " + sounddir + "/Count-02.wav")
+
+                    # Generates a random number between 1-10.
+                    rand = random.randint(1, 20)
+                    # Plays a laugh corresponding to the random number (if it exists).
+                    fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
+                    if path.exists(fullpath):
+                        if usesmoke == 1:
+                            # Setting up smoke machine trigger pin.
+                            GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
+                            # Activating smoke.
+                            GPIO.output(smokeactivatepin, 0)
+                            #GPIO.output(smokeactivatepin, 1)
+                            time.sleep(smokepufftime)
+                            # Deactivating smoke.
+                            GPIO.setup(smokeactivatepin, GPIO.IN)
+                        os.system("aplay -q " + fullpath)
 
                 # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
@@ -455,7 +464,6 @@ try:
         # Plays a laugh corresponding to the random number (if it exists).
         fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
         if path.exists(fullpath):
-            os.system("aplay -q " + fullpath)
             if usesmoke == 1:
                 # Setting up smoke machine trigger pin.
                 GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
@@ -465,6 +473,7 @@ try:
                 time.sleep(smokepufftime)
                 # Deactivating smoke.
                 GPIO.setup(smokeactivatepin, GPIO.IN)
+            os.system("aplay -q " + fullpath)
             
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
