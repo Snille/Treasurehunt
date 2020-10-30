@@ -30,8 +30,8 @@ ratio = 855
 # Coin weight number ratio in Workshop: 827
 #ratio = 827
 # Coins to collect for the chest to open (100).
-#goal = 100
-goal = 3
+goal = 100
+#goal = 3
 # Set to 1 if it is ok to add more coins then specified in goal (chest opens when goal or higher is reached) otherwise it must be the exact goal number.
 overgoalok = 1
 
@@ -42,22 +42,22 @@ lidpin = 23
 secretpin = 24
 
 ## Smoke machine stuff.
-# Smoke generator avalable (1 or 0).
+# Smoke generator available (1 or 0).
 usesmoke = 1
 # When smoke machine is ready (warm). Set to 0 if not available on your smoke machine.
 smokereadypin = 0
-#smokereadypin = 27
+#smokereadypin = 24
 # Smoke activation trigger When activated smoke is generated.
-smokeactivatepin = 17
+smokeactivatepin = 27
 # Smoke machine warm up time in seconds (if the ready signal is not available).
-#smokewarmuptime = 240
-smokewarmuptime = 10
+smokewarmuptime = 150 # 2,5 minutes
+#smokewarmuptime = 10 # 10 seconds
 # Fill the room with smoke at start (1 or 0).
 smokefill = 1
 # How long (in seconds) to fill the room with smoke.
-smokefilltime = 20
+smokefilltime = 30 # 30 seconds
 # Smoke "puff" time. The time in seconds the smoke machine will puff out new smoke during the "laughs".
-smokepufftime = 1
+smokepufftime = 1 # 1 second
 
 ## Sound settings
 # Play the chest sounds (0 for no 1 for yes).
@@ -80,7 +80,7 @@ mmport = "8080"
 
 # Time to wait before going back to the "normal" profile on the MagicMirror.
 waittime = 300 # Five minutes.
-#waittime = 10 # 10 seconds. 
+#waittime = 30 # 30 seconds. 
 
 # MagicMirror MMM-Remote-Control module commands to build on.
 profilechange = "http://" + mmip + ":" + mmport + "/remote?action=NOTIFICATION&notification=CURRENT_PROFILE&payload="
@@ -190,7 +190,7 @@ sonosapiip = "10.0.0.21"
 # Port to the SONOS http API.
 sonosapiport= "5005"
 # Volume to play on.
-sonosvolume = 50
+sonosvolume = 60
 # Playlist name
 playlist = "Skattjakt"
 # Sonos command URL
@@ -288,15 +288,18 @@ try:
             time.sleep(smokewarmuptime)
         # Smoke machine is warm.
         print(consolesmokeready)
-        # Setting up smoke machine trigger pin.
-        GPIO.setup(smokeactivatepin, GPIO.OUT)
 
         # Filling the room with smoke if activated.
         if smokefill == 1:
             print(consolesmokefill)
-            GPIO.output(smokeactivatepin, 1)
-            time.sleep(smokefilltime)
+            # Setting up smoke machine trigger pin.
+            GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
+            # Activating smoke.
             GPIO.output(smokeactivatepin, 0)
+            #GPIO.output(smokeactivatepin, 1)
+            time.sleep(smokefilltime)
+            # Deactivating smoke.
+            GPIO.setup(smokeactivatepin, GPIO.IN)
 
     print(consolestartmessage[0], goal, consolestartmessage[1])
 
@@ -374,10 +377,14 @@ try:
                     if path.exists(fullpath):
                         os.system("aplay -q " + fullpath)
                         if usesmoke == 1:
-                            GPIO.output(smokeactivatepin, 1)
+                            # Setting up smoke machine trigger pin.
+                            GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
+                            # Activating smoke.
+                            GPIO.output(smokeactivatepin, 0)
+                            #GPIO.output(smokeactivatepin, 1)
                             time.sleep(smokepufftime)
-                            GPIO.output(smokeactivatepin, 0) 
-
+                            # Deactivating smoke.
+                            GPIO.setup(smokeactivatepin, GPIO.IN)
 
                 # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
@@ -450,9 +457,14 @@ try:
         if path.exists(fullpath):
             os.system("aplay -q " + fullpath)
             if usesmoke == 1:
-                GPIO.output(smokeactivatepin, 1)
+                # Setting up smoke machine trigger pin.
+                GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
+                # Activating smoke.
+                GPIO.output(smokeactivatepin, 0)
+                #GPIO.output(smokeactivatepin, 1)
                 time.sleep(smokepufftime)
-                GPIO.output(smokeactivatepin, 0) 
+                # Deactivating smoke.
+                GPIO.setup(smokeactivatepin, GPIO.IN)
             
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
