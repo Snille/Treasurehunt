@@ -366,15 +366,6 @@ try:
 
                     # If the number sound exists, play it.
                     if path.exists(fullpath):
-                        if usesmoke == 1:
-                            # Setting up smoke machine trigger pin.
-                            GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
-                            # Activating smoke.
-                            GPIO.output(smokeactivatepin, 0)
-                            #GPIO.output(smokeactivatepin, 1)
-                            time.sleep(smokepufftime)
-                            # Deactivating smoke.
-                            GPIO.setup(smokeactivatepin, GPIO.IN)
                         os.system("aplay -q " + sounddir + "/Count-01.wav")
                         os.system("aplay -q " + fullpath)
                         os.system("aplay -q " + sounddir + "/Count-02.wav")
@@ -384,6 +375,7 @@ try:
                     # Plays a laugh corresponding to the random number (if it exists).
                     fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
                     if path.exists(fullpath):
+                        os.system("aplay -q " + fullpath)
                         if usesmoke == 1:
                             # Setting up smoke machine trigger pin.
                             GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
@@ -393,7 +385,6 @@ try:
                             time.sleep(smokepufftime)
                             # Deactivating smoke.
                             GPIO.setup(smokeactivatepin, GPIO.IN)
-                        os.system("aplay -q " + fullpath)
 
                 # Only play once. The lid has to be closed and opened again to play again.
                 read = 0
@@ -434,13 +425,13 @@ try:
                     moduleresponse = urllib.request.urlopen(hidetouchnavigation)
                     moduleresponse = urllib.request.urlopen(hidecurrentweather)
                     moduleresponse = urllib.request.urlopen(hideweatherforecast)
-                    
+
                     # Showing pre start Profile.
                     profileresponse = urllib.request.urlopen(startprofile)
                     moduleresponse = urllib.request.urlopen(showprestartmodule)
                     moduleresponse = urllib.request.urlopen(showcoinmodule2)
                     moduleresponse = urllib.request.urlopen(showiftttmodule)
-                    
+
                     # Posting start message.
                     iftttresponse = requests.post(ifttturl, json={'message': iftttprestartmessage, 'displaySeconds': mmtime, 'size': mmsize})
 
@@ -459,11 +450,12 @@ try:
                 started = 1
 
         # This plays a random laugh during the whole searching, even if no one is lifting the lid.
-        # Generates a random number between 1-200.
+        # Generates a random number between 1-100.
         rand = random.randint(1, 100)
         # Plays a laugh corresponding to the random number (if it exists).
         fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
         if path.exists(fullpath):
+            os.system("aplay -q " + fullpath)
             if usesmoke == 1:
                 # Setting up smoke machine trigger pin.
                 GPIO.setup(smokeactivatepin, GPIO.OUT, initial = False)
@@ -473,8 +465,7 @@ try:
                 time.sleep(smokepufftime)
                 # Deactivating smoke.
                 GPIO.setup(smokeactivatepin, GPIO.IN)
-            os.system("aplay -q " + fullpath)
-            
+
         # The lid has to be opened and closed for the sounds to play again.
         if GPIO.input(lidpin) == GPIO.HIGH:
             read = 1
@@ -510,7 +501,6 @@ except (KeyboardInterrupt, SystemExit):
         haresponse = requests.post(haswitchurl + "/turn_off", json={'entity_id': haunit1}, headers = haheader)
         haresponse = requests.post(halighturl + "/turn_on", json={'entity_id': haunit2, 'brightness': enddimval}, headers = haheader)
 
-    
     # Setting everything on the MagicMirror back to normal.
     if mmpost == 1:
         time.sleep(waittime)
@@ -518,7 +508,7 @@ except (KeyboardInterrupt, SystemExit):
         # Showing modules and switching to the normal profile.
         profileresponse = urllib.request.urlopen(normalprofile)
         time.sleep(3)
-        
+
         # Hiding the IFTTT module and shows the "everyone modules".
         moduleresponse = urllib.request.urlopen(hideiftttmodule)
         moduleresponse = urllib.request.urlopen(showcurrentweather)
