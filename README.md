@@ -1,4 +1,9 @@
 # The Hunt for the Pirate coins
+
+![Treasure Chest](/Pictures/Kista-01-small.jpg)
+![Treasure Chest](/Pictures/Kista-02-small.jpg)
+![Pireate Coins](/Pictures/Coins-small.png)
+
 I made this event for my daughters 8:th birthday. The concept is copied from the theme of "Pirates of the Caribbean - The Cruise of the Black Perl". Basically the party guests have to find 100 [Pirate coins](https://www.thingiverse.com/thing:2936980)" to be able to "unlock" the Treasure Chest (containing candy).
 
 Background story: During the summer, we had our yard dig up to add pluming to a new building. This lead to some strange finds in the ground. Among them where an old "chimney". So, I will use this memory to trigger some suspense when I give them a key "to something" that I found in the ground when we dug.
@@ -23,23 +28,11 @@ The treasure chest is placed on the flor and the "firey lights" are places besid
 
 When they finally have pushed all 100 coins in the chest, the lid will unlock (the servo will unlatch) and the lid can be opened. A message will be played saying "Congratulations!! You have found the 100 pirate coins, the chest is unlocked. I hope the candy is good!" and the room will then be "restored" to an office. Lights dims up to a normal and the blind is pulled back up (smoke will still be there of course... :)
 
-This is the chest and the printed pirate coins:
+The Chest electronics:
 
-![Treasure Chest](/Pictures/Kista-01-small.jpg)
-![Treasure Chest](/Pictures/Kista-02-small.jpg)
-![Pireate Coins](/Pictures/potcc-small.jpg)
-
-
-The electronics:
-
-![Electronics](/Pictures/Electronics.png)
-
+![Electronics](/Pictures/Electronics-samll.png)
 
 This is the inside. The "outer" shelf is attached to the load cell and weigh the coins when they are pushed in from the front and the sides.
-
-![Inside Back](/Pictures/Backside-Inside.png)
-![Inside Frpnt](/Pictures/Frontside-Inside.png)
-
 
 ![Open](/Pictures/Kista-04-small.png)
 ![Electronics inside](/Pictures/Kista-03-small.png)
