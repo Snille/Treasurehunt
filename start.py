@@ -55,9 +55,9 @@ smokewarmuptime = 150 # 2,5 minutes
 # Fill the room with smoke at start (1 or 0).
 smokefill = 1
 # How long (in seconds) to fill the room with smoke.
-smokefilltime = 30 # 30 seconds
+smokefilltime = 40 # 40 seconds
 # Smoke "puff" time. The time in seconds the smoke machine will puff out new smoke during the "laughs".
-smokepufftime = 1 # 1 second
+smokepufftime = 2 # 1 second
 
 ## Sound settings
 # Play the chest sounds (0 for no 1 for yes).
@@ -370,8 +370,8 @@ try:
                         os.system("aplay -q " + fullpath)
                         os.system("aplay -q " + sounddir + "/Count-02.wav")
 
-                    # Generates a random number between 1-10.
-                    rand = random.randint(1, 20)
+                    # Generates a random number between 1-15.
+                    rand = random.randint(1, 15)
                     # Plays a laugh corresponding to the random number (if it exists).
                     fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
                     if path.exists(fullpath):
@@ -451,7 +451,7 @@ try:
 
         # This plays a random laugh during the whole searching, even if no one is lifting the lid.
         # Generates a random number between 1-100.
-        rand = random.randint(1, 100)
+        rand = random.randint(1, 50)
         # Plays a laugh corresponding to the random number (if it exists).
         fullpath = sounddir + "/Haha-" + str(rand) + ".wav"
         if path.exists(fullpath):
