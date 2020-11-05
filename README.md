@@ -37,15 +37,20 @@ This is the inside. The "outer" shelf is attached to the load cell and weigh the
 ![Open](/Pictures/Kista-04-small.png)
 ![Electronics inside](/Pictures/Kista-03-small.png)
 
+The "hacked" Smoke Remote:
+
+![Remote](/Pictures/Hacked-Smoke-Remote-01-small.png)
+![Remote](/Pictures/Hacked-Smoke-Remote-02-small.png)
+
 It's built around a 5kg "[Load Cell](https://www.ebay.co.uk/itm/Electronic-Balance-Weighing-Load-Cell-Sensor-5Kg-with-HX711-Module/162241279056?hash=item25c6557450:g:l7gAAOSwh2xYAwSK)" with a HX711 module a "[Treasure Chest](https://fyndgiganten.se/produkt/vidaxl-forvaringslada-i-atervunnet-tra/)" and the Pirates of the Caribbean treasure [Coin](https://www.thingiverse.com/thing:2936980).
 
 When they lift and close the lid the first time the "Explain-01.wav" and then "Haha-01.wav" files are played. It continues to play even if the lid is opened and closed over and over until it's played in full. Then if they lift and close again the "Explain-02.wav" and "Haha-02.wav" are played the same way and if they lift and close a third time the "Explain-03.wav" and "Haha-03.wav" are played. Then it loops back to the first and so on, after every lift and close until some one starts to add in coins.
 
 The participants has to find all the 100 (definable) pirate coins and push them in to the chest (lifting the lid the 15mm to get them in). Every time the lid closes the "Count-01.wav", "XX.wav" (depending of the number of coins added) and "Count-02.wav" will be played.
 
-
 This will continue to happen until all coins inserted.
 
+From time to time a laugh will be played and a puff of smoke will be deplyed during the whole session. 
 
 When the correct amount of coins are inserted, the chest will unlock (the servo moves so the latch gets unhooked) and the last "Done-01.wav" will be played and the chest can now be opened.
 
