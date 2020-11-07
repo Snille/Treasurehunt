@@ -3,6 +3,8 @@
 ![Treasure Chest](/Pictures/Kista-01-small.jpg)
 ![Treasure Chest](/Pictures/Kista-02-small.jpg)
 ![Pireate Coins](/Pictures/Coins-small.png)
+
+Here is a short video of the actual event. :)
 [![The Event!](/Pictures/Event.png)](https://www.youtube.com/watch?v=7zYDTiijyEU "Jakten på Pitarmynten")
 
 I made this event for my daughters 8:th birthday. The concept is copied from the theme of "Pirates of the Caribbean - The Cruise of the Black Perl". Basically the party guests have to find 100 [Pirate coins](https://www.thingiverse.com/thing:2936980)" to be able to "unlock" the Treasure Chest (containing candy).
